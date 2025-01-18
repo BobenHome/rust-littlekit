@@ -92,3 +92,26 @@ fn convert_error(e: SqlxError) -> (StatusCode, String) {
 - `Query(query)`: 提取 URL 查询参数
 - 不需要手动传参，Axum 框架自动处理
 
+## 运行说明
+### 开发环境
+```bash
+# 运行服务器
+cargo run
+```
+
+### 生产环境
+```bash
+# 编译优化版本
+cargo build --release
+
+# 运行服务器
+./target/release/rust-http
+```
+
+### 测试 API
+```bash
+# 测试用户查询
+curl http://localhost:3000/users
+curl http://localhost:3000/users?name=张
+```
+
