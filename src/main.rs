@@ -4,9 +4,10 @@ use axum::{
     routing::get,
     Router,
 };
+use dotenv::dotenv;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use sqlx::SqlitePool;
+use sqlx::PgPool;
 use std::collections::HashMap;
 
 // 用户结构体
@@ -25,8 +26,11 @@ struct UserQuery {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // 直接使用数据库路径
-    let db = SqlitePool::connect("sqlite:users.db").await?;
+    // 加载 .env 文件
+    dotenv().ok();
+
+    // 连接 PostgreSQL
+    let db = PgPool::connect(&std::env::var("DATABASE_URL")?).await?;
 
     // 创建路由
     let app = Router::new()
@@ -67,15 +71,15 @@ async fn hello_query(Query(params): Query<HashMap<String, String>>) -> String {
 
 // 查询用户
 async fn get_users(
-    State(db): State<SqlitePool>, // 从 State 中提取数据库连接池
-    Query(query): Query<UserQuery>, // 从 Query 中提取查询参数
+    State(db): State<PgPool>,
+    Query(query): Query<UserQuery>,
 ) -> Result<Json<Vec<User>>, (StatusCode, String)> {
     let users = match query.name {
         Some(name) => {
             let pattern = format!("%{}%", name);
             sqlx::query_as!(
                 User,
-                "SELECT id, name, email FROM users WHERE name LIKE ?",
+                "SELECT id, name, email FROM users WHERE name LIKE $1",
                 pattern
             )
             .fetch_all(&db)

@@ -1,5 +1,12 @@
--- 先清空表
-DELETE FROM users;
+-- 创建用户表
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL
+);
+
+-- 清空表
+TRUNCATE users RESTART IDENTITY;
 
 -- 插入测试数据
 INSERT INTO users (name, email) VALUES
