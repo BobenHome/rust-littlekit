@@ -115,3 +115,26 @@ curl http://localhost:3000/users
 curl http://localhost:3000/users?name=张
 ```
 
+### 使用 .env 文件
+- 创建 .env 文件
+```bash
+echo "DATABASE_URL=postgresql://postgres:123456@localhost:5432/rust_http" > .env
+```
+- 修改 Cargo.toml
+ ```toml
+ [dependencies]
+ dotenv = "0.15"
+ ```
+ -  加载 .env 文件
+  ```rust
+  dotenv::dotenv().ok();
+  ```
+### 使用 postgres 用户创建数据库
+- 使用 postgres 用户创建数据库
+``` bash
+sudo -u postgres createdb rust_http
+```
+- 使用 postgres 用户执行 schema.sql
+``` bash
+sudo -u postgres psql -d rust_http -f schema.sql
+```
