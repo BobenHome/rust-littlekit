@@ -6,7 +6,7 @@ mod utils;
 use axum::Router;
 use dotenv::dotenv;
 use routes::user_routes::user_routes;
-use sqlx::PgPool;
+use sqlx::MySqlPool;
 use tracing::info;
 use utils::logger::init_logger;
 
@@ -18,7 +18,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenv().ok();
     info!("Environment loaded");
 
-    let db = PgPool::connect(&std::env::var("DATABASE_URL")?).await?;
+    let db = MySqlPool::connect(&std::env::var("DATABASE_URL")?).await?;
     info!("Database connected");
 
     let app = Router::new().merge(user_routes()).with_state(db);

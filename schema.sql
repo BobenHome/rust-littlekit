@@ -1,12 +1,12 @@
 -- 创建用户表
 CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL,
-    email TEXT NOT NULL
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL
 );
 
 -- 清空表
-TRUNCATE users RESTART IDENTITY;
+TRUNCATE TABLE users;
 
 -- 插入测试数据
 INSERT INTO users (name, email) VALUES

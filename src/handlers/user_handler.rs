@@ -3,12 +3,12 @@ use axum::{
     http::StatusCode,
     Json,
 };
-use sqlx::PgPool;
+use sqlx::MySqlPool;
 
 use crate::models::user::{User, UserQuery};
 
 pub async fn get_users(
-    State(db): State<PgPool>,
+    State(db): State<MySqlPool>,
     Query(query): Query<UserQuery>,
 ) -> Result<Json<Vec<User>>, (StatusCode, String)> {
     let users = match query.name {
@@ -16,7 +16,7 @@ pub async fn get_users(
             let pattern = format!("%{}%", name);
             sqlx::query_as!(
                 User,
-                "SELECT id, name, email FROM users WHERE name LIKE $1",
+                "SELECT id, name, email FROM users WHERE name LIKE ?",
                 pattern
             )
             .fetch_all(&db)
